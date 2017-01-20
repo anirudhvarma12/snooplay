@@ -61,6 +61,14 @@
 	
 	var _container2 = _interopRequireDefault(_container);
 	
+	var _helpers = __webpack_require__(/*! ./helpers */ 180);
+	
+	var _selectors = __webpack_require__(/*! ./selectors */ 182);
+	
+	var Selectors = _interopRequireWildcard(_selectors);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -69,24 +77,64 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
+	var DEFAULT_SUB = "Music";
+	
 	var App = function (_React$Component) {
 	  _inherits(App, _React$Component);
 	
 	  function App(props) {
 	    _classCallCheck(this, App);
 	
-	    return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+	
+	    _this.onSubredditAdded = _this.onSubredditAdded.bind(_this);
+	    _this.changeSub = _this.changeSub.bind(_this);
+	    _this.state = {
+	      currentSub: DEFAULT_SUB,
+	      allSubs: [DEFAULT_SUB],
+	      loading: true
+	    };
+	    return _this;
 	  }
 	
 	  _createClass(App, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var userAddedSubs = (0, _helpers.getSubreddits)();
+	      if (userAddedSubs != null) {
+	        this.setState({ allSubs: userAddedSubs, currentSub: userAddedSubs[0], loading: false });
+	      } else {
+	        this.setState({ loading: false });
+	      }
+	    }
+	  }, {
+	    key: 'onSubredditAdded',
+	    value: function onSubredditAdded() {
+	      alert("Added");
+	    }
+	  }, {
+	    key: 'changeSub',
+	    value: function changeSub(subreddit) {
+	      this.setState({ selectedSub: subreddit });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
-	
-	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement(_container2.default, { subreddit: 'NMmusicIndia' })
-	      );
+	      if (this.state.loading) {
+	        return _react2.default.createElement(
+	          'span',
+	          null,
+	          'Loading App'
+	        );
+	      } else {
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(Selectors.SwitchSubreddit, { 'switch': this.changeSub, items: this.state.allSubs, current: this.state.selectedSub }),
+	          _react2.default.createElement(Selectors.AddSubredditForm, { onAfterAdd: this.onSubredditAdded }),
+	          _react2.default.createElement(_container2.default, { subreddit: this.state.currentSub })
+	        );
+	      }
 	    }
 	  }]);
 	
@@ -22309,6 +22357,9 @@
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	exports.ps_getPosts = ps_getPosts;
+	exports.isStorageAvailable = isStorageAvailable;
+	exports.storeSubreddits = storeSubreddits;
+	exports.getSubreddits = getSubreddits;
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -22338,7 +22389,7 @@
 	    }
 	}
 	
-	var RedditPostItem = function () {
+	var RedditPostItem = exports.RedditPostItem = function () {
 	    function RedditPostItem(videoId, title, permalink) {
 	        _classCallCheck(this, RedditPostItem);
 	
@@ -22367,7 +22418,31 @@
 	    return RedditPostItem;
 	}();
 	
-	exports.default = RedditPostItem;
+	function isStorageAvailable() {
+	    //test if localstorage is available.
+	    try {
+	        var storage = window['localStorage'],
+	            x = '__storage_test__';
+	        storage.setItem(x, x);
+	        storage.removeItem(x);
+	        return true;
+	    } catch (e) {
+	        return false;
+	    }
+	}
+	
+	var STORE_KEY = "snooplay_subredditList";
+	
+	function storeSubreddits(items) {
+	    window.localStorage.setItem(STORE_KEY, JSON.stringify(items));
+	}
+	
+	function getSubreddits() {
+	    var stored = window.localStorage.getItem(STORE_KEY);
+	    if (stored != null) {
+	        return JSON.parse(stored);
+	    }
+	}
 
 /***/ },
 /* 181 */
@@ -22408,15 +22483,6 @@
 	
 	var SubredditContainer = function (_React$Component) {
 	    _inherits(SubredditContainer, _React$Component);
-	
-	    _createClass(SubredditContainer, null, [{
-	        key: 'defaultProps',
-	        get: function get() {
-	            return {
-	                subreddit: "Music"
-	            };
-	        }
-	    }]);
 	
 	    function SubredditContainer(props) {
 	        _classCallCheck(this, SubredditContainer);
@@ -22516,6 +22582,174 @@
 	}(_react2.default.Component);
 	
 	exports.default = SubredditContainer;
+
+/***/ },
+/* 182 */
+/*!**************************!*\
+  !*** ./src/selectors.js ***!
+  \**************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.SwitchSubreddit = exports.AddSubredditForm = undefined;
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 32);
+	
+	var _helpers = __webpack_require__(/*! ./helpers */ 180);
+	
+	var DbUtils = _interopRequireWildcard(_helpers);
+	
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var AddSubredditForm = exports.AddSubredditForm = function (_React$Component) {
+	    _inherits(AddSubredditForm, _React$Component);
+	
+	    _createClass(AddSubredditForm, null, [{
+	        key: 'defaultProps',
+	        get: function get() {
+	            return {
+	                onAfterAdd: function onAfterAdd() {}
+	            };
+	        }
+	    }]);
+	
+	    function AddSubredditForm(props) {
+	        _classCallCheck(this, AddSubredditForm);
+	
+	        var _this = _possibleConstructorReturn(this, (AddSubredditForm.__proto__ || Object.getPrototypeOf(AddSubredditForm)).call(this, props));
+	
+	        _this.valueChanged = _this.valueChanged.bind(_this);
+	        _this.submit = _this.submit.bind(_this);
+	        _this.state = { subredditName: '' };
+	        return _this;
+	    }
+	
+	    _createClass(AddSubredditForm, [{
+	        key: 'valueChanged',
+	        value: function valueChanged(event) {
+	            this.setState({ subredditName: event.target.value });
+	        }
+	    }, {
+	        key: 'submit',
+	        value: function submit(event) {
+	            console.log("Submitted" + this.state.subredditName);
+	            var subreddit = this.state.subredditName;
+	            var existingSubs = DbUtils.getSubreddits();
+	            if (existingSubs) {
+	                for (var i = 0; i < existingSubs.length; i++) {
+	                    if (existingSubs[i] == subreddit) {
+	                        alert("Already Added");
+	                        return;
+	                    }
+	                }
+	            } else {
+	                existingSubs = [];
+	            }
+	            existingSubs.push(subreddit);
+	            DbUtils.storeSubreddits(existingSubs);
+	            this.props.onAfterAdd();
+	            event.preventDefault();
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'form',
+	                { onSubmit: this.submit },
+	                _react2.default.createElement('input', { type: 'text', placeholder: 'Subreddit Name eg (Music, Movies) ', value: this.state.value, onChange: this.valueChanged, required: true }),
+	                _react2.default.createElement(
+	                    'button',
+	                    null,
+	                    'Add Subreddit'
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return AddSubredditForm;
+	}(_react2.default.Component);
+	
+	var SwitchSubreddit = exports.SwitchSubreddit = function (_React$Component2) {
+	    _inherits(SwitchSubreddit, _React$Component2);
+	
+	    _createClass(SwitchSubreddit, null, [{
+	        key: 'defaultProps',
+	        get: function get() {
+	            return {
+	                items: []
+	            };
+	        }
+	    }]);
+	
+	    function SwitchSubreddit(props) {
+	        _classCallCheck(this, SwitchSubreddit);
+	
+	        var _this2 = _possibleConstructorReturn(this, (SwitchSubreddit.__proto__ || Object.getPrototypeOf(SwitchSubreddit)).call(this, props));
+	
+	        _this2.selectionChange = _this2.selectionChange.bind(_this2);
+	        _this2.submit = _this2.submit.bind(_this2);
+	        _this2.state = {
+	            selected: _this2.props.current
+	        };
+	        return _this2;
+	    }
+	
+	    _createClass(SwitchSubreddit, [{
+	        key: 'selectionChange',
+	        value: function selectionChange(event) {
+	            this.setState({ selected: event.target.value });
+	        }
+	    }, {
+	        key: 'submit',
+	        value: function submit() {
+	            this.props.switch(this.state.selected);
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'form',
+	                { onSubmit: this.submit },
+	                _react2.default.createElement(
+	                    'select',
+	                    { value: this.state.selected, onChange: this.selectionChange },
+	                    this.props.items.map(function (item, index) {
+	                        return _react2.default.createElement(
+	                            'option',
+	                            { key: index },
+	                            item
+	                        );
+	                    })
+	                ),
+	                _react2.default.createElement(
+	                    'button',
+	                    null,
+	                    'Change'
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return SwitchSubreddit;
+	}(_react2.default.Component);
 
 /***/ }
 /******/ ]);

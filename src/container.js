@@ -7,11 +7,7 @@ import { ps_getPosts } from './helpers';
 
 class SubredditContainer extends React.Component {
 
-    static get defaultProps() {
-        return {
-            subreddit: "Music"
-        }
-    }
+    
 
     constructor(props) {
         super(props);

@@ -2,7 +2,7 @@
 
 export function ps_getPosts(subreddit, afterload) {
     let request = new XMLHttpRequest();
-    request.open('GET', 'https://www.reddit.com/r/' + subreddit +".json");
+    request.open('GET', 'https://www.reddit.com/r/' + subreddit + ".json");
     request.onload = function (e) {
         let responseBody = request.responseText;
         let listing = JSON.parse(responseBody);
@@ -26,7 +26,7 @@ function createItem(element) {
     }
 }
 
-class RedditPostItem {
+export class RedditPostItem {
 
     constructor(videoId, title, permalink) {
         this._videoId = videoId;
@@ -48,4 +48,29 @@ class RedditPostItem {
 
 }
 
-export default RedditPostItem;
+export function isStorageAvailable() {
+    //test if localstorage is available.
+    try {
+        var storage = window['localStorage'],
+            x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    }
+    catch (e) {
+        return false;
+    }
+}
+
+const STORE_KEY = "snooplay_subredditList";
+
+export function storeSubreddits(items){
+    window.localStorage.setItem(STORE_KEY, JSON.stringify(items));
+}
+
+export function getSubreddits(){
+    let stored = window.localStorage.getItem(STORE_KEY);
+    if(stored!=null){
+        return JSON.parse(stored);
+    }
+}
