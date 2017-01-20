@@ -57,6 +57,14 @@
 	
 	var _reactDom = __webpack_require__(/*! react-dom */ 32);
 	
+	var _video = __webpack_require__(/*! ./video */ 178);
+	
+	var _listing = __webpack_require__(/*! ./listing */ 179);
+	
+	var _listing2 = _interopRequireDefault(_listing);
+	
+	var _helpers = __webpack_require__(/*! ./helpers */ 180);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -68,20 +76,97 @@
 	var App = function (_React$Component) {
 	  _inherits(App, _React$Component);
 	
-	  function App() {
+	  function App(props) {
 	    _classCallCheck(this, App);
 	
-	    return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
+	
+	    _this.itemClickHandler = _this.itemClickHandler.bind(_this);
+	    _this.updateList = _this.updateList.bind(_this);
+	    _this.playPrevious = _this.playPrevious.bind(_this);
+	    _this.playNext = _this.playNext.bind(_this);
+	    _this.state = { loading: true };
+	    return _this;
 	  }
 	
 	  _createClass(App, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      (0, _helpers.ps_getPosts)('music', function (items) {
+	        console.log("number of youtube videos found = " + items.length);
+	        this.updateList(items);
+	      }.bind(this));
+	    }
+	  }, {
+	    key: 'updateList',
+	    value: function updateList(list) {
+	      if (list.length > 0) {
+	        this.setState({ loading: false, items: list, current: list[0], currentIndex: 0 });
+	      }
+	    }
+	  }, {
+	    key: 'itemClickHandler',
+	    value: function itemClickHandler(item, index) {
+	      console.log("Clicked " + item.videoId());
+	      this.setState({ current: item, currentIndex: index });
+	    }
+	  }, {
+	    key: 'playPrevious',
+	    value: function playPrevious() {
+	      var currentIndex = this.state.currentIndex;
+	      var newIndex = 0;
+	      if (currentIndex == 0 && this.state.items.length > 0) {
+	        newIndex = this.state.items.length - 1;
+	      } else {
+	        newIndex = currentIndex - 1;
+	      }
+	      this.itemClickHandler(this.state.items[newIndex], newIndex);
+	    }
+	  }, {
+	    key: 'playNext',
+	    value: function playNext() {
+	      var currentIndex = this.state.currentIndex;
+	      var newIndex = 0;
+	      if (currentIndex != this.state.items.length - 1) {
+	        newIndex = currentIndex + 1;
+	      }
+	      this.itemClickHandler(this.state.items[newIndex], newIndex);
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement(
-	        'p',
-	        null,
-	        ' Hello React!'
-	      );
+	      if (this.state.loading) {
+	        return _react2.default.createElement(
+	          'span',
+	          null,
+	          'Loading'
+	        );
+	      } else {
+	        var player = _react2.default.createElement(
+	          'span',
+	          null,
+	          'No Video Found'
+	        );
+	        if (this.state.current != null) {
+	          player = _react2.default.createElement(
+	            'div',
+	            null,
+	            _react2.default.createElement(_video.Video, { title: this.state.current.title(), videoId: this.state.current.videoId() }),
+	            ' ',
+	            _react2.default.createElement(_video.ListControls, { prev: this.playPrevious, next: this.playNext })
+	          );
+	        }
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            'div',
+	            null,
+	            player
+	          ),
+	          _react2.default.createElement(_listing2.default, { items: this.state.items, onItemClick: this.itemClickHandler })
+	        );
+	      }
 	    }
 	  }]);
 	
@@ -22054,6 +22139,316 @@
 	
 	module.exports = ReactDOMInvalidARIAHook;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! ./../../webpack/~/node-libs-browser/~/process/browser.js */ 3)))
+
+/***/ },
+/* 178 */
+/*!**********************!*\
+  !*** ./src/video.js ***!
+  \**********************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.ListControls = exports.Video = undefined;
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 32);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Video = function (_React$Component) {
+	    _inherits(Video, _React$Component);
+	
+	    function Video() {
+	        _classCallCheck(this, Video);
+	
+	        return _possibleConstructorReturn(this, (Video.__proto__ || Object.getPrototypeOf(Video)).apply(this, arguments));
+	    }
+	
+	    _createClass(Video, [{
+	        key: 'getEmbedUrl',
+	        value: function getEmbedUrl(vid) {
+	
+	            return 'https://www.youtube.com/embed/' + vid;
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var embedUrl = this.getEmbedUrl(this.props.videoId);
+	            if (embedUrl != null) {
+	                return _react2.default.createElement(
+	                    'div',
+	                    null,
+	                    _react2.default.createElement(
+	                        'h1',
+	                        null,
+	                        this.props.title
+	                    ),
+	                    _react2.default.createElement('iframe', { src: embedUrl })
+	                );
+	            } else {
+	                return _react2.default.createElement(
+	                    'div',
+	                    null,
+	                    _react2.default.createElement(
+	                        'h1',
+	                        null,
+	                        this.props.title
+	                    ),
+	                    _react2.default.createElement(
+	                        'span',
+	                        null,
+	                        ':( Could not find video id for URL ',
+	                        _react2.default.createElement(
+	                            'a',
+	                            { href: this.props.vid },
+	                            this.props.vid
+	                        )
+	                    )
+	                );
+	            }
+	        }
+	    }]);
+	
+	    return Video;
+	}(_react2.default.Component);
+	
+	var ListControls = function (_React$Component2) {
+	    _inherits(ListControls, _React$Component2);
+	
+	    function ListControls(props) {
+	        _classCallCheck(this, ListControls);
+	
+	        var _this2 = _possibleConstructorReturn(this, (ListControls.__proto__ || Object.getPrototypeOf(ListControls)).call(this, props));
+	
+	        _this2.onNextClick = _this2.onNextClick.bind(_this2);
+	        _this2.onPreviousClick = _this2.onPreviousClick.bind(_this2);
+	        return _this2;
+	    }
+	
+	    _createClass(ListControls, [{
+	        key: 'onPreviousClick',
+	        value: function onPreviousClick() {
+	            this.props.prev();
+	        }
+	    }, {
+	        key: 'onNextClick',
+	        value: function onNextClick() {
+	            this.props.next();
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'div',
+	                null,
+	                _react2.default.createElement(
+	                    'a',
+	                    { onClick: this.onPreviousClick },
+	                    'Previous'
+	                ),
+	                _react2.default.createElement(
+	                    'a',
+	                    { onClick: this.onNextClick },
+	                    'Next'
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return ListControls;
+	}(_react2.default.Component);
+	
+	exports.Video = Video;
+	exports.ListControls = ListControls;
+
+/***/ },
+/* 179 */
+/*!************************!*\
+  !*** ./src/listing.js ***!
+  \************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 32);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var PostList = function (_React$Component) {
+	    _inherits(PostList, _React$Component);
+	
+	    function PostList() {
+	        _classCallCheck(this, PostList);
+	
+	        return _possibleConstructorReturn(this, (PostList.__proto__ || Object.getPrototypeOf(PostList)).apply(this, arguments));
+	    }
+	
+	    _createClass(PostList, [{
+	        key: 'render',
+	        value: function render() {
+	            var _this2 = this;
+	
+	            return _react2.default.createElement(
+	                'div',
+	                null,
+	                _react2.default.createElement(
+	                    'ul',
+	                    null,
+	                    this.props.items.map(function (item, index) {
+	                        return _react2.default.createElement(PostItem, { item: item, key: index, onClick: _this2.props.onItemClick });
+	                    })
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return PostList;
+	}(_react2.default.Component);
+	
+	var PostItem = function (_React$Component2) {
+	    _inherits(PostItem, _React$Component2);
+	
+	    function PostItem(props) {
+	        _classCallCheck(this, PostItem);
+	
+	        var _this3 = _possibleConstructorReturn(this, (PostItem.__proto__ || Object.getPrototypeOf(PostItem)).call(this, props));
+	
+	        _this3.handleClick = _this3.handleClick.bind(_this3);
+	        return _this3;
+	    }
+	
+	    _createClass(PostItem, [{
+	        key: 'handleClick',
+	        value: function handleClick() {
+	            this.props.onClick(this.props.item);
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'li',
+	                null,
+	                _react2.default.createElement(
+	                    'a',
+	                    { onClick: this.handleClick },
+	                    this.props.item.title(),
+	                    ';'
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return PostItem;
+	}(_react2.default.Component);
+	
+	exports.default = PostList;
+
+/***/ },
+/* 180 */
+/*!************************!*\
+  !*** ./src/helpers.js ***!
+  \************************/
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	exports.ps_getPosts = ps_getPosts;
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function ps_getPosts(subreddit, afterload) {
+	    var request = new XMLHttpRequest();
+	    request.open('GET', 'https://www.reddit.com/r/' + subreddit + ".json");
+	    request.onload = function (e) {
+	        var responseBody = request.responseText;
+	        var listing = JSON.parse(responseBody);
+	        var posts = listing.data.children;
+	        var items = [];
+	        posts.forEach(function (element) {
+	            var item = createItem(element.data);
+	            if (item != null) {
+	                items.push(item);
+	            }
+	        }, this);
+	        afterload(items);
+	    };
+	    request.send();
+	}
+	
+	function createItem(element) {
+	    var videoId = element.url.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
+	    if (videoId != null) {
+	        return new RedditPostItem(videoId[1], element.title, element.permalink);
+	    }
+	}
+	
+	var RedditPostItem = function () {
+	    function RedditPostItem(videoId, title, permalink) {
+	        _classCallCheck(this, RedditPostItem);
+	
+	        this._videoId = videoId;
+	        this._title = title;
+	        this._permalink = permalink;
+	    }
+	
+	    _createClass(RedditPostItem, [{
+	        key: 'videoId',
+	        value: function videoId() {
+	            return this._videoId;
+	        }
+	    }, {
+	        key: 'title',
+	        value: function title() {
+	            return this._title;
+	        }
+	    }, {
+	        key: 'permalink',
+	        value: function permalink() {
+	            return this._permalink;
+	        }
+	    }]);
+	
+	    return RedditPostItem;
+	}();
+	
+	exports.default = RedditPostItem;
 
 /***/ }
 /******/ ]);
