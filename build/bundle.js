@@ -117,7 +117,6 @@
 	  }, {
 	    key: 'changeSub',
 	    value: function changeSub(subreddit) {
-	      console.log("setting new state for container " + subreddit);
 	      this.setState({ currentSub: subreddit });
 	    }
 	  }, {
@@ -141,14 +140,18 @@
 	              { className: 'row' },
 	              _react2.default.createElement(
 	                'div',
-	                { className: 'header-column' },
+	                null,
 	                _react2.default.createElement(
 	                  'h1',
 	                  null,
-	                  'Snooplay'
+	                  'Snooplay: ',
+	                  _react2.default.createElement(
+	                    'small',
+	                    null,
+	                    'Watch YouTube links on Reddit in a playlist like format.'
+	                  )
 	                )
-	              ),
-	              _react2.default.createElement('div', { className: 'header-column' })
+	              )
 	            ),
 	            _react2.default.createElement(
 	              'div',
@@ -169,6 +172,26 @@
 	            'div',
 	            { className: 'subreddit-container' },
 	            _react2.default.createElement(_container2.default, { subreddit: this.state.currentSub })
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'footer' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'row' },
+	              'Made with ',
+	              _react2.default.createElement(
+	                'a',
+	                { href: 'https://facebook.github.io/react/' },
+	                'React.'
+	              ),
+	              ' Full Source on ',
+	              _react2.default.createElement(
+	                'a',
+	                { href: 'https://github.com/anirudhvarma12/snooplay' },
+	                'GitHub'
+	              )
+	            )
 	          )
 	        );
 	      }
@@ -22191,19 +22214,21 @@
 	        var _this = _possibleConstructorReturn(this, (SubredditContainer.__proto__ || Object.getPrototypeOf(SubredditContainer)).call(this, props));
 	
 	        _this.itemClickHandler = _this.itemClickHandler.bind(_this);
-	        _this.updateList = _this.updateList.bind(_this);
+	        _this.resetList = _this.resetList.bind(_this);
+	        _this.updateListOnly = _this.updateListOnly.bind(_this);
 	        _this.playPrevious = _this.playPrevious.bind(_this);
 	        _this.playNext = _this.playNext.bind(_this);
-	        _this.state = { loading: true, autoplay: false, subreddit: _this.props.subreddit };
+	        _this.loadMoreItems = _this.loadMoreItems.bind(_this);
+	        _this.state = { loading: true, autoplay: false, subreddit: _this.props.subreddit, lastItemId: "" };
 	        return _this;
 	    }
 	
 	    _createClass(SubredditContainer, [{
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
-	            (0, _helpers.ps_getPosts)(this.state.subreddit, function (items) {
+	            (0, _helpers.getPosts)(this.state.subreddit, function (items, lastItemId) {
 	                console.log("number of youtube videos found = " + items.length);
-	                this.updateList(items);
+	                this.resetList(items, lastItemId);
 	            }.bind(this));
 	        }
 	    }, {
@@ -22212,18 +22237,23 @@
 	            if (nextProps.subreddit != this.props.subreddit) {
 	                console.log("Updating SR " + nextProps.subreddit + " current " + this.props.subreddit);
 	                this.setState({ loading: true, subreddit: nextProps.subreddit });
-	                (0, _helpers.ps_getPosts)(nextProps.subreddit, function (items) {
+	                (0, _helpers.getPosts)(nextProps.subreddit, function (items, lastItem) {
 	                    console.log("number of youtube videos found for updated= " + items.length);
-	                    this.updateList(items);
+	                    this.resetList(items, lastItem);
 	                }.bind(this));
 	            }
 	        }
 	    }, {
-	        key: 'updateList',
-	        value: function updateList(list) {
+	        key: 'resetList',
+	        value: function resetList(list, lastItem) {
 	            if (list.length > 0) {
-	                this.setState({ loading: false, items: list, current: list[0], currentIndex: 0 });
+	                this.setState({ loading: false, items: list, current: list[0], currentIndex: 0, lastItemId: lastItem });
 	            }
+	        }
+	    }, {
+	        key: 'updateListOnly',
+	        value: function updateListOnly(list, lastItem) {
+	            this.setState({ loading: false, items: list, lastItemId: lastItem });
 	        }
 	    }, {
 	        key: 'itemClickHandler',
@@ -22254,14 +22284,23 @@
 	            this.itemClickHandler(this.state.items[newIndex], newIndex);
 	        }
 	    }, {
+	        key: 'loadMoreItems',
+	        value: function loadMoreItems() {
+	            var count = this.state.items.length;
+	            if (count > 0) {
+	                var lastItem = this.state.items[count - 1];
+	                (0, _helpers.getFollowUpPosts)(this.state.subreddit, this.state.lastItemId, function (elements, lastItem) {
+	                    var current = this.state.items;
+	                    current = current.concat(elements);
+	                    this.updateListOnly(current, lastItem);
+	                }.bind(this));
+	            }
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            if (this.state.loading) {
-	                return _react2.default.createElement(
-	                    'span',
-	                    null,
-	                    'Loading'
-	                );
+	                return _react2.default.createElement('span', { className: 'loading' });
 	            } else {
 	                var player = _react2.default.createElement(
 	                    'span',
@@ -22284,7 +22323,20 @@
 	                        null,
 	                        player
 	                    ),
-	                    _react2.default.createElement(_listing2.default, { items: this.state.items, onItemClick: this.itemClickHandler })
+	                    _react2.default.createElement(_listing2.default, { items: this.state.items, onItemClick: this.itemClickHandler }),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'row' },
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'postItem loadMoreLink' },
+	                            _react2.default.createElement(
+	                                'a',
+	                                { className: 'postItem-playLink', onClick: this.loadMoreItems },
+	                                'Load More'
+	                            )
+	                        )
+	                    )
 	                );
 	            }
 	        }
@@ -22559,28 +22611,40 @@
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	exports.ps_getPosts = ps_getPosts;
+	exports.getPosts = getPosts;
+	exports.getFollowUpPosts = getFollowUpPosts;
 	exports.isStorageAvailable = isStorageAvailable;
 	exports.storeSubreddits = storeSubreddits;
 	exports.getSubreddits = getSubreddits;
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	function ps_getPosts(subreddit, afterload) {
+	function getPosts(subreddit, afterload) {
+	    var url = 'https://www.reddit.com/r/' + subreddit + ".json";
+	    createListFromUrl(afterload, url);
+	}
+	
+	function getFollowUpPosts(subreddit, lastItem, afterload) {
+	    var url = "https://www.reddit.com/r/" + subreddit + ".json?count=30&after=" + lastItem;
+	    createListFromUrl(afterload, url);
+	}
+	
+	function createListFromUrl(afterload, url) {
 	    var request = new XMLHttpRequest();
-	    request.open('GET', 'https://www.reddit.com/r/' + subreddit + ".json");
+	    request.open('GET', url);
 	    request.onload = function (e) {
 	        var responseBody = request.responseText;
 	        var listing = JSON.parse(responseBody);
 	        var posts = listing.data.children;
 	        var items = [];
+	        var lastItemId = listing.data.after;
 	        posts.forEach(function (element) {
 	            var item = createItem(element.data);
 	            if (item != null) {
 	                items.push(item);
 	            }
 	        }, this);
-	        afterload(items);
+	        afterload(items, lastItemId);
 	    };
 	    request.send();
 	}
@@ -22588,17 +22652,18 @@
 	function createItem(element) {
 	    var videoId = element.url.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
 	    if (videoId != null) {
-	        return new RedditPostItem(videoId[1], element.title, element.permalink);
+	        return new RedditPostItem(videoId[1], element.title, element.permalink, element.id);
 	    }
 	}
 	
 	var RedditPostItem = exports.RedditPostItem = function () {
-	    function RedditPostItem(videoId, title, permalink) {
+	    function RedditPostItem(videoId, title, permalink, redditId) {
 	        _classCallCheck(this, RedditPostItem);
 	
 	        this._videoId = videoId;
 	        this._title = title;
 	        this._permalink = permalink;
+	        this._redditId = redditId;
 	    }
 	
 	    _createClass(RedditPostItem, [{
@@ -22615,6 +22680,11 @@
 	        key: 'permalink',
 	        value: function permalink() {
 	            return "https://www.reddit.com/" + this._permalink;
+	        }
+	    }, {
+	        key: 'redditId',
+	        value: function redditId() {
+	            return this._redditId;
 	        }
 	    }]);
 	

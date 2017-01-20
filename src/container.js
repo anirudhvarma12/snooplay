@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Video, ListControls } from './video';
 import PostList from './listing';
-import { ps_getPosts } from './helpers';
+import { getPosts, getFollowUpPosts } from './helpers';
 
 
 class SubredditContainer extends React.Component {
@@ -10,16 +10,18 @@ class SubredditContainer extends React.Component {
     constructor(props) {
         super(props);
         this.itemClickHandler = this.itemClickHandler.bind(this);
-        this.updateList = this.updateList.bind(this);
+        this.resetList = this.resetList.bind(this);
+        this.updateListOnly = this.updateListOnly.bind(this);
         this.playPrevious = this.playPrevious.bind(this);
         this.playNext = this.playNext.bind(this);
-        this.state = { loading: true, autoplay: false, subreddit: this.props.subreddit };
+        this.loadMoreItems = this.loadMoreItems.bind(this);
+        this.state = { loading: true, autoplay: false, subreddit: this.props.subreddit, lastItemId: "" };
     }
 
     componentDidMount() {
-        ps_getPosts(this.state.subreddit, function (items) {
+        getPosts(this.state.subreddit, function (items, lastItemId) {
             console.log("number of youtube videos found = " + items.length);
-            this.updateList(items);
+            this.resetList(items, lastItemId);
         }.bind(this));
     }
 
@@ -28,18 +30,23 @@ class SubredditContainer extends React.Component {
         if (nextProps.subreddit != this.props.subreddit) {
             console.log("Updating SR " + nextProps.subreddit + " current " + this.props.subreddit);
             this.setState({ loading: true, subreddit: nextProps.subreddit });
-            ps_getPosts(nextProps.subreddit, function (items) {
+            getPosts(nextProps.subreddit, function (items, lastItem) {
                 console.log("number of youtube videos found for updated= " + items.length);
-                this.updateList(items);
+                this.resetList(items, lastItem);
             }.bind(this));
         }
     }
 
-    updateList(list) {
+    resetList(list, lastItem) {
         if (list.length > 0) {
-            this.setState({ loading: false, items: list, current: list[0], currentIndex: 0 });
+            this.setState({ loading: false, items: list, current: list[0], currentIndex: 0, lastItemId: lastItem });
         }
     }
+
+    updateListOnly(list, lastItem){
+        this.setState({ loading: false, items: list, lastItemId: lastItem });
+    }
+    
 
     itemClickHandler(item, index) {
         console.log("Clicked " + item.videoId());
@@ -66,9 +73,21 @@ class SubredditContainer extends React.Component {
         this.itemClickHandler(this.state.items[newIndex], newIndex);
     }
 
+    loadMoreItems() {
+        let count = this.state.items.length;
+        if (count > 0) {
+            let lastItem = this.state.items[count - 1];
+            getFollowUpPosts(this.state.subreddit, this.state.lastItemId, function (elements, lastItem) {
+                let current = this.state.items;
+                current = current.concat(elements);
+                this.updateListOnly(current, lastItem);
+            }.bind(this));
+        }
+    }
+
     render() {
         if (this.state.loading) {
-            return <span>Loading</span>
+            return <span className="loading"></span>
         } else {
             let player = <span>No Video Found</span>
             if (this.state.current != null) {
@@ -84,6 +103,11 @@ class SubredditContainer extends React.Component {
 
                     </div>
                     <PostList items={this.state.items} onItemClick={this.itemClickHandler} />
+                    <div className="row">
+                        <div className="postItem loadMoreLink">
+                            <a className="postItem-playLink" onClick={this.loadMoreItems}>Load More</a>
+                        </div>
+                    </div>
                 </div>
             )
         }

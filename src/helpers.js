@@ -1,20 +1,31 @@
 'use strict'
 
-export function ps_getPosts(subreddit, afterload) {
+export function getPosts(subreddit, afterload) {
+    let url = 'https://www.reddit.com/r/' + subreddit + ".json";
+    createListFromUrl(afterload, url);
+}
+
+export function getFollowUpPosts(subreddit, lastItem, afterload) {
+    let url = "https://www.reddit.com/r/" + subreddit + ".json?count=30&after=" + lastItem;
+    createListFromUrl(afterload, url);
+}
+
+function createListFromUrl(afterload, url) {
     let request = new XMLHttpRequest();
-    request.open('GET', 'https://www.reddit.com/r/' + subreddit + ".json");
+    request.open('GET', url);
     request.onload = function (e) {
         let responseBody = request.responseText;
         let listing = JSON.parse(responseBody);
         let posts = listing.data.children;
         let items = [];
+        let lastItemId = listing.data.after;
         posts.forEach(function (element) {
             let item = createItem(element.data);
             if (item != null) {
                 items.push(item);
             }
         }, this);
-        afterload(items);
+        afterload(items, lastItemId);
     };
     request.send();
 }
@@ -22,16 +33,17 @@ export function ps_getPosts(subreddit, afterload) {
 function createItem(element) {
     let videoId = element.url.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
     if (videoId != null) {
-        return new RedditPostItem(videoId[1], element.title, element.permalink);
+        return new RedditPostItem(videoId[1], element.title, element.permalink, element.id);
     }
 }
 
 export class RedditPostItem {
 
-    constructor(videoId, title, permalink) {
+    constructor(videoId, title, permalink, redditId) {
         this._videoId = videoId;
         this._title = title;
         this._permalink = permalink;
+        this._redditId = redditId;
     }
 
     videoId() {
@@ -44,6 +56,10 @@ export class RedditPostItem {
 
     permalink() {
         return "https://www.reddit.com/" + this._permalink;
+    }
+
+    redditId() {
+        return this._redditId;
     }
 
 }

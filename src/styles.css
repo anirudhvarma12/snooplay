@@ -199,7 +199,7 @@ form
     width: 50%;
 }
 
-.header-column > h1
+.header-column > h2
 {
     margin: 0;
 }
@@ -228,4 +228,28 @@ button
     border-radius: 3px;
     background: #072431;
     box-shadow: 1px 1px 1px #9c9c9c;
+}
+
+.loading {
+    display: block;
+    background: url('icons/loading.svg') no-repeat center;
+    height: 100px;
+    width: 100px;
+    margin: 20px auto;
+}
+
+.loadMoreLink {
+    text-align: center;
+    margin: 20px 0 40px 0;
+}
+
+.footer {
+    background: #072431;
+    color: #f5f5f5;
+    padding: 10px;
+    text-align: center;
+}
+
+.footer a{
+    text-decoration: underline;
 }

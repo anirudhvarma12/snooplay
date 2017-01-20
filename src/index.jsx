@@ -36,7 +36,6 @@ class App extends React.Component {
   }
 
   changeSub(subreddit) {
-    console.log("setting new state for container " + subreddit);
     this.setState({ currentSub: subreddit });
   }
 
@@ -48,10 +47,9 @@ class App extends React.Component {
         <div>
           <div className="header">
             <div className="row">
-              <div className="header-column">
-                <h1>Snooplay</h1>
+              <div>
+                <h1>Snooplay: <small>Watch YouTube links on Reddit in a playlist like format.</small></h1>
               </div>
-              <div className="header-column"></div>
             </div>
             <div className="row">
               <div className="header-column">
@@ -64,6 +62,12 @@ class App extends React.Component {
           </div>
           <div className="subreddit-container">
             <SubredditContainer subreddit={this.state.currentSub} />
+          </div>
+
+          <div className="footer">
+            <div className="row">
+              Made with <a href="https://facebook.github.io/react/">React.</a> Full Source on <a href="https://github.com/anirudhvarma12/snooplay">GitHub</a>
+            </div>
           </div>
         </div>
       )
