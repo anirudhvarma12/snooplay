@@ -57,13 +57,9 @@
 	
 	var _reactDom = __webpack_require__(/*! react-dom */ 32);
 	
-	var _video = __webpack_require__(/*! ./video */ 178);
+	var _container = __webpack_require__(/*! ./container */ 181);
 	
-	var _listing = __webpack_require__(/*! ./listing */ 179);
-	
-	var _listing2 = _interopRequireDefault(_listing);
-	
-	var _helpers = __webpack_require__(/*! ./helpers */ 180);
+	var _container2 = _interopRequireDefault(_container);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -79,94 +75,18 @@
 	  function App(props) {
 	    _classCallCheck(this, App);
 	
-	    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
-	
-	    _this.itemClickHandler = _this.itemClickHandler.bind(_this);
-	    _this.updateList = _this.updateList.bind(_this);
-	    _this.playPrevious = _this.playPrevious.bind(_this);
-	    _this.playNext = _this.playNext.bind(_this);
-	    _this.state = { loading: true };
-	    return _this;
+	    return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 	  }
 	
 	  _createClass(App, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      (0, _helpers.ps_getPosts)('music', function (items) {
-	        console.log("number of youtube videos found = " + items.length);
-	        this.updateList(items);
-	      }.bind(this));
-	    }
-	  }, {
-	    key: 'updateList',
-	    value: function updateList(list) {
-	      if (list.length > 0) {
-	        this.setState({ loading: false, items: list, current: list[0], currentIndex: 0 });
-	      }
-	    }
-	  }, {
-	    key: 'itemClickHandler',
-	    value: function itemClickHandler(item, index) {
-	      console.log("Clicked " + item.videoId());
-	      this.setState({ current: item, currentIndex: index });
-	    }
-	  }, {
-	    key: 'playPrevious',
-	    value: function playPrevious() {
-	      var currentIndex = this.state.currentIndex;
-	      var newIndex = 0;
-	      if (currentIndex == 0 && this.state.items.length > 0) {
-	        newIndex = this.state.items.length - 1;
-	      } else {
-	        newIndex = currentIndex - 1;
-	      }
-	      this.itemClickHandler(this.state.items[newIndex], newIndex);
-	    }
-	  }, {
-	    key: 'playNext',
-	    value: function playNext() {
-	      var currentIndex = this.state.currentIndex;
-	      var newIndex = 0;
-	      if (currentIndex != this.state.items.length - 1) {
-	        newIndex = currentIndex + 1;
-	      }
-	      this.itemClickHandler(this.state.items[newIndex], newIndex);
-	    }
-	  }, {
 	    key: 'render',
 	    value: function render() {
-	      if (this.state.loading) {
-	        return _react2.default.createElement(
-	          'span',
-	          null,
-	          'Loading'
-	        );
-	      } else {
-	        var player = _react2.default.createElement(
-	          'span',
-	          null,
-	          'No Video Found'
-	        );
-	        if (this.state.current != null) {
-	          player = _react2.default.createElement(
-	            'div',
-	            null,
-	            _react2.default.createElement(_video.Video, { title: this.state.current.title(), videoId: this.state.current.videoId() }),
-	            ' ',
-	            _react2.default.createElement(_video.ListControls, { prev: this.playPrevious, next: this.playNext })
-	          );
-	        }
-	        return _react2.default.createElement(
-	          'div',
-	          null,
-	          _react2.default.createElement(
-	            'div',
-	            null,
-	            player
-	          ),
-	          _react2.default.createElement(_listing2.default, { items: this.state.items, onItemClick: this.itemClickHandler })
-	        );
-	      }
+	
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(_container2.default, { subreddit: 'NMmusicIndia' })
+	      );
 	    }
 	  }]);
 	
@@ -22182,7 +22102,6 @@
 	    _createClass(Video, [{
 	        key: 'getEmbedUrl',
 	        value: function getEmbedUrl(vid) {
-	
 	            return 'https://www.youtube.com/embed/' + vid;
 	        }
 	    }, {
@@ -22449,6 +22368,154 @@
 	}();
 	
 	exports.default = RedditPostItem;
+
+/***/ },
+/* 181 */
+/*!**************************!*\
+  !*** ./src/container.js ***!
+  \**************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 32);
+	
+	var _video = __webpack_require__(/*! ./video */ 178);
+	
+	var _listing = __webpack_require__(/*! ./listing */ 179);
+	
+	var _listing2 = _interopRequireDefault(_listing);
+	
+	var _helpers = __webpack_require__(/*! ./helpers */ 180);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var SubredditContainer = function (_React$Component) {
+	    _inherits(SubredditContainer, _React$Component);
+	
+	    _createClass(SubredditContainer, null, [{
+	        key: 'defaultProps',
+	        get: function get() {
+	            return {
+	                subreddit: "Music"
+	            };
+	        }
+	    }]);
+	
+	    function SubredditContainer(props) {
+	        _classCallCheck(this, SubredditContainer);
+	
+	        var _this = _possibleConstructorReturn(this, (SubredditContainer.__proto__ || Object.getPrototypeOf(SubredditContainer)).call(this, props));
+	
+	        _this.itemClickHandler = _this.itemClickHandler.bind(_this);
+	        _this.updateList = _this.updateList.bind(_this);
+	        _this.playPrevious = _this.playPrevious.bind(_this);
+	        _this.playNext = _this.playNext.bind(_this);
+	        _this.state = { loading: true };
+	        return _this;
+	    }
+	
+	    _createClass(SubredditContainer, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            (0, _helpers.ps_getPosts)(this.props.subreddit, function (items) {
+	                console.log("number of youtube videos found = " + items.length);
+	                this.updateList(items);
+	            }.bind(this));
+	        }
+	    }, {
+	        key: 'updateList',
+	        value: function updateList(list) {
+	            if (list.length > 0) {
+	                this.setState({ loading: false, items: list, current: list[0], currentIndex: 0 });
+	            }
+	        }
+	    }, {
+	        key: 'itemClickHandler',
+	        value: function itemClickHandler(item, index) {
+	            console.log("Clicked " + item.videoId());
+	            this.setState({ current: item, currentIndex: index });
+	        }
+	    }, {
+	        key: 'playPrevious',
+	        value: function playPrevious() {
+	            var currentIndex = this.state.currentIndex;
+	            var newIndex = 0;
+	            if (currentIndex == 0 && this.state.items.length > 0) {
+	                newIndex = this.state.items.length - 1;
+	            } else {
+	                newIndex = currentIndex - 1;
+	            }
+	            this.itemClickHandler(this.state.items[newIndex], newIndex);
+	        }
+	    }, {
+	        key: 'playNext',
+	        value: function playNext() {
+	            var currentIndex = this.state.currentIndex;
+	            var newIndex = 0;
+	            if (currentIndex != this.state.items.length - 1) {
+	                newIndex = currentIndex + 1;
+	            }
+	            this.itemClickHandler(this.state.items[newIndex], newIndex);
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            if (this.state.loading) {
+	                return _react2.default.createElement(
+	                    'span',
+	                    null,
+	                    'Loading'
+	                );
+	            } else {
+	                var player = _react2.default.createElement(
+	                    'span',
+	                    null,
+	                    'No Video Found'
+	                );
+	                if (this.state.current != null) {
+	                    player = _react2.default.createElement(
+	                        'div',
+	                        null,
+	                        _react2.default.createElement(_video.Video, { title: this.state.current.title(), videoId: this.state.current.videoId() }),
+	                        ' ',
+	                        _react2.default.createElement(_video.ListControls, { prev: this.playPrevious, next: this.playNext })
+	                    );
+	                }
+	                return _react2.default.createElement(
+	                    'div',
+	                    null,
+	                    _react2.default.createElement(
+	                        'div',
+	                        null,
+	                        player
+	                    ),
+	                    _react2.default.createElement(_listing2.default, { items: this.state.items, onItemClick: this.itemClickHandler })
+	                );
+	            }
+	        }
+	    }]);
+	
+	    return SubredditContainer;
+	}(_react2.default.Component);
+	
+	exports.default = SubredditContainer;
 
 /***/ }
 /******/ ]);

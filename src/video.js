@@ -6,9 +6,7 @@ import { render } from 'react-dom';
 class Video extends React.Component {
 
     getEmbedUrl(vid) {
-
         return 'https://www.youtube.com/embed/' + vid;
-
     }
 
     render() {
