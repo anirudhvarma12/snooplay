@@ -57,11 +57,11 @@
 	
 	var _reactDom = __webpack_require__(/*! react-dom */ 32);
 	
-	var _container = __webpack_require__(/*! ./container */ 181);
+	var _container = __webpack_require__(/*! ./container */ 178);
 	
 	var _container2 = _interopRequireDefault(_container);
 	
-	var _helpers = __webpack_require__(/*! ./helpers */ 180);
+	var _helpers = __webpack_require__(/*! ./helpers */ 181);
 	
 	var _selectors = __webpack_require__(/*! ./selectors */ 182);
 	
@@ -111,11 +111,14 @@
 	    key: 'onSubredditAdded',
 	    value: function onSubredditAdded() {
 	      alert("Added");
+	      var userAddedSubs = (0, _helpers.getSubreddits)();
+	      this.setState({ allSubs: userAddedSubs });
 	    }
 	  }, {
 	    key: 'changeSub',
 	    value: function changeSub(subreddit) {
-	      this.setState({ selectedSub: subreddit });
+	      console.log("setting new state for container " + subreddit);
+	      this.setState({ currentSub: subreddit });
 	    }
 	  }, {
 	    key: 'render',
@@ -130,9 +133,43 @@
 	        return _react2.default.createElement(
 	          'div',
 	          null,
-	          _react2.default.createElement(Selectors.SwitchSubreddit, { 'switch': this.changeSub, items: this.state.allSubs, current: this.state.selectedSub }),
-	          _react2.default.createElement(Selectors.AddSubredditForm, { onAfterAdd: this.onSubredditAdded }),
-	          _react2.default.createElement(_container2.default, { subreddit: this.state.currentSub })
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'header' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'row' },
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'header-column' },
+	                _react2.default.createElement(
+	                  'h1',
+	                  null,
+	                  'Snooplay'
+	                )
+	              ),
+	              _react2.default.createElement('div', { className: 'header-column' })
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'row' },
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'header-column' },
+	                _react2.default.createElement(Selectors.SwitchSubreddit, { 'switch': this.changeSub, items: this.state.allSubs })
+	              ),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'header-column' },
+	                _react2.default.createElement(Selectors.AddSubredditForm, { onAfterAdd: this.onSubredditAdded })
+	              )
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'subreddit-container' },
+	            _react2.default.createElement(_container2.default, { subreddit: this.state.currentSub })
+	          )
 	        );
 	      }
 	    }
@@ -22110,6 +22147,156 @@
 
 /***/ },
 /* 178 */
+/*!**************************!*\
+  !*** ./src/container.js ***!
+  \**************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(/*! react */ 1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(/*! react-dom */ 32);
+	
+	var _video = __webpack_require__(/*! ./video */ 179);
+	
+	var _listing = __webpack_require__(/*! ./listing */ 180);
+	
+	var _listing2 = _interopRequireDefault(_listing);
+	
+	var _helpers = __webpack_require__(/*! ./helpers */ 181);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var SubredditContainer = function (_React$Component) {
+	    _inherits(SubredditContainer, _React$Component);
+	
+	    function SubredditContainer(props) {
+	        _classCallCheck(this, SubredditContainer);
+	
+	        var _this = _possibleConstructorReturn(this, (SubredditContainer.__proto__ || Object.getPrototypeOf(SubredditContainer)).call(this, props));
+	
+	        _this.itemClickHandler = _this.itemClickHandler.bind(_this);
+	        _this.updateList = _this.updateList.bind(_this);
+	        _this.playPrevious = _this.playPrevious.bind(_this);
+	        _this.playNext = _this.playNext.bind(_this);
+	        _this.state = { loading: true, autoplay: false, subreddit: _this.props.subreddit };
+	        return _this;
+	    }
+	
+	    _createClass(SubredditContainer, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            (0, _helpers.ps_getPosts)(this.state.subreddit, function (items) {
+	                console.log("number of youtube videos found = " + items.length);
+	                this.updateList(items);
+	            }.bind(this));
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            if (nextProps.subreddit != this.props.subreddit) {
+	                console.log("Updating SR " + nextProps.subreddit + " current " + this.props.subreddit);
+	                this.setState({ loading: true, subreddit: nextProps.subreddit });
+	                (0, _helpers.ps_getPosts)(nextProps.subreddit, function (items) {
+	                    console.log("number of youtube videos found for updated= " + items.length);
+	                    this.updateList(items);
+	                }.bind(this));
+	            }
+	        }
+	    }, {
+	        key: 'updateList',
+	        value: function updateList(list) {
+	            if (list.length > 0) {
+	                this.setState({ loading: false, items: list, current: list[0], currentIndex: 0 });
+	            }
+	        }
+	    }, {
+	        key: 'itemClickHandler',
+	        value: function itemClickHandler(item, index) {
+	            console.log("Clicked " + item.videoId());
+	            this.setState({ current: item, currentIndex: index, autoplay: true });
+	        }
+	    }, {
+	        key: 'playPrevious',
+	        value: function playPrevious() {
+	            var currentIndex = this.state.currentIndex;
+	            var newIndex = 0;
+	            if (currentIndex == 0 && this.state.items.length > 0) {
+	                newIndex = this.state.items.length - 1;
+	            } else {
+	                newIndex = currentIndex - 1;
+	            }
+	            this.itemClickHandler(this.state.items[newIndex], newIndex);
+	        }
+	    }, {
+	        key: 'playNext',
+	        value: function playNext() {
+	            var currentIndex = this.state.currentIndex;
+	            var newIndex = 0;
+	            if (currentIndex != this.state.items.length - 1) {
+	                newIndex = currentIndex + 1;
+	            }
+	            this.itemClickHandler(this.state.items[newIndex], newIndex);
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            if (this.state.loading) {
+	                return _react2.default.createElement(
+	                    'span',
+	                    null,
+	                    'Loading'
+	                );
+	            } else {
+	                var player = _react2.default.createElement(
+	                    'span',
+	                    null,
+	                    'No Video Found'
+	                );
+	                if (this.state.current != null) {
+	                    player = _react2.default.createElement(
+	                        'div',
+	                        null,
+	                        _react2.default.createElement(_video.Video, { title: this.state.current.title(), videoId: this.state.current.videoId(), autoplay: this.state.autoplay }),
+	                        _react2.default.createElement(_video.ListControls, { prev: this.playPrevious, next: this.playNext, permalink: this.state.current.permalink() })
+	                    );
+	                }
+	                return _react2.default.createElement(
+	                    'div',
+	                    null,
+	                    _react2.default.createElement(
+	                        'div',
+	                        null,
+	                        player
+	                    ),
+	                    _react2.default.createElement(_listing2.default, { items: this.state.items, onItemClick: this.itemClickHandler })
+	                );
+	            }
+	        }
+	    }]);
+	
+	    return SubredditContainer;
+	}(_react2.default.Component);
+	
+	exports.default = SubredditContainer;
+
+/***/ },
+/* 179 */
 /*!**********************!*\
   !*** ./src/video.js ***!
   \**********************/
@@ -22150,7 +22337,13 @@
 	    _createClass(Video, [{
 	        key: 'getEmbedUrl',
 	        value: function getEmbedUrl(vid) {
-	            return 'https://www.youtube.com/embed/' + vid;
+	            var autoplay = this.props.autoplay;
+	            if (autoplay) {
+	                autoplay = 1;
+	            } else {
+	                autoplay = 0;
+	            }
+	            return 'https://www.youtube.com/embed/' + vid + "?autoplay=" + autoplay;
 	        }
 	    }, {
 	        key: 'render',
@@ -22159,13 +22352,17 @@
 	            if (embedUrl != null) {
 	                return _react2.default.createElement(
 	                    'div',
-	                    null,
+	                    { className: 'player' },
 	                    _react2.default.createElement(
-	                        'h1',
-	                        null,
-	                        this.props.title
-	                    ),
-	                    _react2.default.createElement('iframe', { src: embedUrl })
+	                        'div',
+	                        { className: 'row' },
+	                        _react2.default.createElement(
+	                            'h1',
+	                            { className: 'player-title' },
+	                            this.props.title
+	                        ),
+	                        _react2.default.createElement('iframe', { width: '100%', height: '450px', src: embedUrl })
+	                    )
 	                );
 	            } else {
 	                return _react2.default.createElement(
@@ -22222,16 +22419,17 @@
 	        value: function render() {
 	            return _react2.default.createElement(
 	                'div',
-	                null,
+	                { className: 'row' },
 	                _react2.default.createElement(
-	                    'a',
-	                    { onClick: this.onPreviousClick },
-	                    'Previous'
-	                ),
-	                _react2.default.createElement(
-	                    'a',
-	                    { onClick: this.onNextClick },
-	                    'Next'
+	                    'div',
+	                    { className: 'playerControls' },
+	                    _react2.default.createElement('a', { className: 'playerControls-item icon-reddit', title: 'Open on Reddit', href: this.props.permalink }),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'playerControls-listControls' },
+	                        _react2.default.createElement('a', { className: 'playerControls-item icon-prev', title: 'Previous', onClick: this.onPreviousClick }),
+	                        _react2.default.createElement('a', { className: 'playerControls-item icon-next', title: 'Next', onClick: this.onNextClick })
+	                    )
 	                )
 	            );
 	        }
@@ -22244,7 +22442,7 @@
 	exports.ListControls = ListControls;
 
 /***/ },
-/* 179 */
+/* 180 */
 /*!************************!*\
   !*** ./src/listing.js ***!
   \************************/
@@ -22288,10 +22486,10 @@
 	
 	            return _react2.default.createElement(
 	                'div',
-	                null,
+	                { className: 'row' },
 	                _react2.default.createElement(
 	                    'ul',
-	                    null,
+	                    { className: 'postList' },
 	                    this.props.items.map(function (item, index) {
 	                        return _react2.default.createElement(PostItem, { item: item, key: index, onClick: _this2.props.onItemClick });
 	                    })
@@ -22325,12 +22523,17 @@
 	        value: function render() {
 	            return _react2.default.createElement(
 	                'li',
-	                null,
+	                { className: 'postItem' },
 	                _react2.default.createElement(
 	                    'a',
-	                    { onClick: this.handleClick },
+	                    { onClick: this.handleClick, className: 'postItem-playLink  icon-play' },
 	                    this.props.item.title(),
 	                    ';'
+	                ),
+	                _react2.default.createElement(
+	                    'a',
+	                    { className: 'postItem-permalink', href: this.props.item.permalink() },
+	                    this.props.item.permalink()
 	                )
 	            );
 	        }
@@ -22342,7 +22545,7 @@
 	exports.default = PostList;
 
 /***/ },
-/* 180 */
+/* 181 */
 /*!************************!*\
   !*** ./src/helpers.js ***!
   \************************/
@@ -22411,7 +22614,7 @@
 	    }, {
 	        key: 'permalink',
 	        value: function permalink() {
-	            return this._permalink;
+	            return "https://www.reddit.com/" + this._permalink;
 	        }
 	    }]);
 	
@@ -22445,145 +22648,6 @@
 	}
 
 /***/ },
-/* 181 */
-/*!**************************!*\
-  !*** ./src/container.js ***!
-  \**************************/
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _react = __webpack_require__(/*! react */ 1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactDom = __webpack_require__(/*! react-dom */ 32);
-	
-	var _video = __webpack_require__(/*! ./video */ 178);
-	
-	var _listing = __webpack_require__(/*! ./listing */ 179);
-	
-	var _listing2 = _interopRequireDefault(_listing);
-	
-	var _helpers = __webpack_require__(/*! ./helpers */ 180);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var SubredditContainer = function (_React$Component) {
-	    _inherits(SubredditContainer, _React$Component);
-	
-	    function SubredditContainer(props) {
-	        _classCallCheck(this, SubredditContainer);
-	
-	        var _this = _possibleConstructorReturn(this, (SubredditContainer.__proto__ || Object.getPrototypeOf(SubredditContainer)).call(this, props));
-	
-	        _this.itemClickHandler = _this.itemClickHandler.bind(_this);
-	        _this.updateList = _this.updateList.bind(_this);
-	        _this.playPrevious = _this.playPrevious.bind(_this);
-	        _this.playNext = _this.playNext.bind(_this);
-	        _this.state = { loading: true };
-	        return _this;
-	    }
-	
-	    _createClass(SubredditContainer, [{
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
-	            (0, _helpers.ps_getPosts)(this.props.subreddit, function (items) {
-	                console.log("number of youtube videos found = " + items.length);
-	                this.updateList(items);
-	            }.bind(this));
-	        }
-	    }, {
-	        key: 'updateList',
-	        value: function updateList(list) {
-	            if (list.length > 0) {
-	                this.setState({ loading: false, items: list, current: list[0], currentIndex: 0 });
-	            }
-	        }
-	    }, {
-	        key: 'itemClickHandler',
-	        value: function itemClickHandler(item, index) {
-	            console.log("Clicked " + item.videoId());
-	            this.setState({ current: item, currentIndex: index });
-	        }
-	    }, {
-	        key: 'playPrevious',
-	        value: function playPrevious() {
-	            var currentIndex = this.state.currentIndex;
-	            var newIndex = 0;
-	            if (currentIndex == 0 && this.state.items.length > 0) {
-	                newIndex = this.state.items.length - 1;
-	            } else {
-	                newIndex = currentIndex - 1;
-	            }
-	            this.itemClickHandler(this.state.items[newIndex], newIndex);
-	        }
-	    }, {
-	        key: 'playNext',
-	        value: function playNext() {
-	            var currentIndex = this.state.currentIndex;
-	            var newIndex = 0;
-	            if (currentIndex != this.state.items.length - 1) {
-	                newIndex = currentIndex + 1;
-	            }
-	            this.itemClickHandler(this.state.items[newIndex], newIndex);
-	        }
-	    }, {
-	        key: 'render',
-	        value: function render() {
-	            if (this.state.loading) {
-	                return _react2.default.createElement(
-	                    'span',
-	                    null,
-	                    'Loading'
-	                );
-	            } else {
-	                var player = _react2.default.createElement(
-	                    'span',
-	                    null,
-	                    'No Video Found'
-	                );
-	                if (this.state.current != null) {
-	                    player = _react2.default.createElement(
-	                        'div',
-	                        null,
-	                        _react2.default.createElement(_video.Video, { title: this.state.current.title(), videoId: this.state.current.videoId() }),
-	                        ' ',
-	                        _react2.default.createElement(_video.ListControls, { prev: this.playPrevious, next: this.playNext })
-	                    );
-	                }
-	                return _react2.default.createElement(
-	                    'div',
-	                    null,
-	                    _react2.default.createElement(
-	                        'div',
-	                        null,
-	                        player
-	                    ),
-	                    _react2.default.createElement(_listing2.default, { items: this.state.items, onItemClick: this.itemClickHandler })
-	                );
-	            }
-	        }
-	    }]);
-	
-	    return SubredditContainer;
-	}(_react2.default.Component);
-	
-	exports.default = SubredditContainer;
-
-/***/ },
 /* 182 */
 /*!**************************!*\
   !*** ./src/selectors.js ***!
@@ -22605,7 +22669,7 @@
 	
 	var _reactDom = __webpack_require__(/*! react-dom */ 32);
 	
-	var _helpers = __webpack_require__(/*! ./helpers */ 180);
+	var _helpers = __webpack_require__(/*! ./helpers */ 181);
 	
 	var DbUtils = _interopRequireWildcard(_helpers);
 	
@@ -22707,7 +22771,7 @@
 	        _this2.selectionChange = _this2.selectionChange.bind(_this2);
 	        _this2.submit = _this2.submit.bind(_this2);
 	        _this2.state = {
-	            selected: _this2.props.current
+	            selected: ''
 	        };
 	        return _this2;
 	    }
@@ -22715,12 +22779,14 @@
 	    _createClass(SwitchSubreddit, [{
 	        key: 'selectionChange',
 	        value: function selectionChange(event) {
+	            console.log("updating state " + event.target.value);
 	            this.setState({ selected: event.target.value });
 	        }
 	    }, {
 	        key: 'submit',
-	        value: function submit() {
+	        value: function submit(event) {
 	            this.props.switch(this.state.selected);
+	            event.preventDefault();
 	        }
 	    }, {
 	        key: 'render',

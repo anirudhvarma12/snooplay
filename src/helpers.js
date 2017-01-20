@@ -43,7 +43,7 @@ export class RedditPostItem {
     }
 
     permalink() {
-        return this._permalink;
+        return "https://www.reddit.com/" + this._permalink;
     }
 
 }
@@ -64,13 +64,13 @@ export function isStorageAvailable() {
 
 const STORE_KEY = "snooplay_subredditList";
 
-export function storeSubreddits(items){
+export function storeSubreddits(items) {
     window.localStorage.setItem(STORE_KEY, JSON.stringify(items));
 }
 
-export function getSubreddits(){
+export function getSubreddits() {
     let stored = window.localStorage.getItem(STORE_KEY);
-    if(stored!=null){
+    if (stored != null) {
         return JSON.parse(stored);
     }
 }

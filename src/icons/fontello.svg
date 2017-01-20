@@ -1,0 +1,18 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg">
+<metadata>Copyright (C) 2017 by original authors @ fontello.com</metadata>
+<defs>
+<font id="fontello" horiz-adv-x="1000" >
+<font-face font-family="fontello" font-weight="400" font-stretch="normal" units-per-em="1000" ascent="850" descent="-150" />
+<missing-glyph horiz-adv-x="1000" />
+<glyph glyph-name="next" unicode="&#xe800;" d="M25-71q-10-11-18-8t-7 18v822q0 14 7 18t18-8l396-396q5-5 8-10v396q0 14 7 18t18-8l396-396q11-10 11-25t-11-25l-396-396q-11-11-18-8t-7 18v397q-3-6-8-11z" horiz-adv-x="928.6" />
+
+<glyph glyph-name="prev" unicode="&#xe801;" d="M904 771q10 11 17 8t8-18v-822q0-14-8-18t-17 8l-397 396q-5 5-7 11v-397q0-14-7-18t-18 8l-396 396q-11 11-11 25t11 25l396 396q11 11 18 8t7-18v-396q2 5 7 10z" horiz-adv-x="928.6" />
+
+<glyph glyph-name="play" unicode="&#xf144;" d="M429 779q116 0 215-58t156-156 57-215-57-215-156-156-215-58-216 58-155 156-58 215 58 215 155 156 216 58z m214-460q18 10 18 31t-18 31l-304 178q-17 11-35 1-18-11-18-31v-358q0-20 18-31 9-4 17-4 10 0 18 5z" horiz-adv-x="857.1" />
+
+<glyph glyph-name="reddit" unicode="&#xf1a1;" d="M611 199q9-9 0-17-34-35-111-35t-111 35q-9 8 0 17 3 3 8 3t9-3q27-28 94-28 67 0 94 28 4 3 9 3t8-3z m-171 101q0-21-15-35t-35-15-35 15-15 35q0 21 15 36t35 14 35-15 15-35z m220 0q0-21-15-35t-35-15-35 15-15 35 15 35 35 15 35-14 15-36z m140 67q0 27-19 47t-48 19-48-20q-72 50-173 54l35 158 112-26q0-20 14-35t35-14 36 15 14 35-14 35-36 15q-30 0-44-28l-124 28q-10 3-14-9l-38-174q-101-4-173-54-19 20-48 20-28 0-48-19t-19-47q0-20 10-36t28-24q-4-16-4-32 0-79 79-135t188-57q110 0 188 57t78 135q0 18-4 32 17 8 27 24t10 36z m200-17q0-102-40-194t-106-160-160-106-194-40-194 40-160 106-106 160-40 194 40 194 106 160 160 106 194 40 194-40 160-106 106-160 40-194z" horiz-adv-x="1000" />
+</font>
+</defs>
+</svg>

@@ -67,16 +67,18 @@ export class SwitchSubreddit extends React.Component {
         this.selectionChange = this.selectionChange.bind(this);
         this.submit = this.submit.bind(this);
         this.state = {
-            selected: this.props.current
+            selected: ''
         }
     }
 
     selectionChange(event) {
+        console.log("updating state "+ event.target.value);
         this.setState({ selected: event.target.value });
     }
 
-    submit() {
+    submit(event) {
         this.props.switch(this.state.selected);
+        event.preventDefault();
     }
 
     render() {

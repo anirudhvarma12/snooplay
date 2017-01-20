@@ -7,8 +7,8 @@ class PostList extends React.Component {
 
     render() {
         return (
-            <div>
-                <ul>
+            <div className="row">
+                <ul className="postList">
                     {
                         this.props.items.map((item, index) => {
                             return <PostItem item={item} key={index} onClick={this.props.onItemClick} />
@@ -34,10 +34,11 @@ class PostItem extends React.Component {
 
     render() {
         return (
-            <li>
-                <a onClick={this.handleClick}>
+            <li className="postItem">
+                <a onClick={this.handleClick} className="postItem-playLink  icon-play">
                     {this.props.item.title()};
                 </a>
+                <a className="postItem-permalink" href={this.props.item.permalink()}>{this.props.item.permalink()}</a>
             </li>
         )
     }

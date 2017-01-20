@@ -31,10 +31,13 @@ class App extends React.Component {
 
   onSubredditAdded() {
     alert("Added");
+    let userAddedSubs = getSubreddits();
+    this.setState({ allSubs: userAddedSubs });
   }
 
   changeSub(subreddit) {
-    this.setState({ selectedSub: subreddit });
+    console.log("setting new state for container " + subreddit);
+    this.setState({ currentSub: subreddit });
   }
 
   render() {
@@ -43,9 +46,25 @@ class App extends React.Component {
     } else {
       return (
         <div>
-          <Selectors.SwitchSubreddit switch={this.changeSub} items={this.state.allSubs} current={this.state.selectedSub} />
-          <Selectors.AddSubredditForm onAfterAdd={this.onSubredditAdded} />
-          <SubredditContainer subreddit={this.state.currentSub} />
+          <div className="header">
+            <div className="row">
+              <div className="header-column">
+                <h1>Snooplay</h1>
+              </div>
+              <div className="header-column"></div>
+            </div>
+            <div className="row">
+              <div className="header-column">
+                <Selectors.SwitchSubreddit switch={this.changeSub} items={this.state.allSubs} />
+              </div>
+              <div className="header-column">
+                <Selectors.AddSubredditForm onAfterAdd={this.onSubredditAdded} />
+              </div>
+            </div>
+          </div>
+          <div className="subreddit-container">
+            <SubredditContainer subreddit={this.state.currentSub} />
+          </div>
         </div>
       )
     }

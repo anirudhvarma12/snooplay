@@ -7,22 +7,32 @@ import { ps_getPosts } from './helpers';
 
 class SubredditContainer extends React.Component {
 
-    
-
     constructor(props) {
         super(props);
         this.itemClickHandler = this.itemClickHandler.bind(this);
         this.updateList = this.updateList.bind(this);
         this.playPrevious = this.playPrevious.bind(this);
         this.playNext = this.playNext.bind(this);
-        this.state = { loading: true };
+        this.state = { loading: true, autoplay: false, subreddit: this.props.subreddit };
     }
 
     componentDidMount() {
-        ps_getPosts(this.props.subreddit, function (items) {
+        ps_getPosts(this.state.subreddit, function (items) {
             console.log("number of youtube videos found = " + items.length);
             this.updateList(items);
         }.bind(this));
+    }
+
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.subreddit != this.props.subreddit) {
+            console.log("Updating SR " + nextProps.subreddit + " current " + this.props.subreddit);
+            this.setState({ loading: true, subreddit: nextProps.subreddit });
+            ps_getPosts(nextProps.subreddit, function (items) {
+                console.log("number of youtube videos found for updated= " + items.length);
+                this.updateList(items);
+            }.bind(this));
+        }
     }
 
     updateList(list) {
@@ -33,7 +43,7 @@ class SubredditContainer extends React.Component {
 
     itemClickHandler(item, index) {
         console.log("Clicked " + item.videoId());
-        this.setState({ current: item, currentIndex: index });
+        this.setState({ current: item, currentIndex: index, autoplay: true });
     }
 
     playPrevious() {
@@ -62,7 +72,10 @@ class SubredditContainer extends React.Component {
         } else {
             let player = <span>No Video Found</span>
             if (this.state.current != null) {
-                player = <div><Video title={this.state.current.title()} videoId={this.state.current.videoId()} /> <ListControls prev={this.playPrevious} next={this.playNext} /></div>
+                player = <div>
+                    <Video title={this.state.current.title()} videoId={this.state.current.videoId()} autoplay={this.state.autoplay} />
+                    <ListControls prev={this.playPrevious} next={this.playNext} permalink={this.state.current.permalink()} />
+                </div>
             }
             return (
                 <div>

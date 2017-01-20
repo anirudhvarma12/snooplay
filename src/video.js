@@ -6,16 +6,24 @@ import { render } from 'react-dom';
 class Video extends React.Component {
 
     getEmbedUrl(vid) {
-        return 'https://www.youtube.com/embed/' + vid;
+        let autoplay = this.props.autoplay;
+        if (autoplay) {
+            autoplay = 1;
+        } else {
+            autoplay = 0;
+        }
+        return 'https://www.youtube.com/embed/' + vid + "?autoplay=" + autoplay;
     }
 
     render() {
         let embedUrl = this.getEmbedUrl(this.props.videoId);
         if (embedUrl != null) {
             return (
-                <div>
-                    <h1>{this.props.title}</h1>
-                    <iframe src={embedUrl}></iframe>
+                <div className="player">
+                    <div className="row">
+                        <h1 className="player-title">{this.props.title}</h1>
+                        <iframe width="100%" height="450px" src={embedUrl}></iframe>
+                    </div>
                 </div>
             )
         } else {
@@ -48,9 +56,14 @@ class ListControls extends React.Component {
 
     render() {
         return (
-            <div>
-                <a onClick={this.onPreviousClick}>Previous</a>
-                <a onClick={this.onNextClick}>Next</a>
+            <div className="row">
+                <div className="playerControls">
+                    <a className="playerControls-item icon-reddit" title="Open on Reddit" href={this.props.permalink}></a>
+                    <div className="playerControls-listControls">
+                        <a className="playerControls-item icon-prev" title="Previous" onClick={this.onPreviousClick}></a>
+                        <a className="playerControls-item icon-next" title="Next" onClick={this.onNextClick}></a>
+                    </div>
+                </div>
             </div>
         )
     }
