@@ -1,16 +1,16 @@
 'use strict'
 
-export function getPosts(subreddit, afterload) {
+export function getPosts(subreddit, afterload, onerror) {
     let url = 'https://www.reddit.com/r/' + subreddit + ".json";
-    createListFromUrl(afterload, url);
+    createListFromUrl(afterload, url, onerror);
 }
 
-export function getFollowUpPosts(subreddit, lastItem, afterload) {
+export function getFollowUpPosts(subreddit, lastItem, afterload, onerror) {
     let url = "https://www.reddit.com/r/" + subreddit + ".json?count=30&after=" + lastItem;
-    createListFromUrl(afterload, url);
+    createListFromUrl(afterload, url, onerror);
 }
 
-function createListFromUrl(afterload, url) {
+function createListFromUrl(afterload, url, onerror) {
     let request = new XMLHttpRequest();
     request.open('GET', url);
     request.onload = function (e) {
@@ -26,6 +26,10 @@ function createListFromUrl(afterload, url) {
             }
         }, this);
         afterload(items, lastItemId);
+    };
+    request.onerror = function (e) {
+        console.log("Got Error");
+        onerror();
     };
     request.send();
 }

@@ -18,6 +18,7 @@ export class AddSubredditForm extends React.Component {
         super(props);
         this.valueChanged = this.valueChanged.bind(this);
         this.submit = this.submit.bind(this);
+        this.validateInput = this.validateInput.bind(this);
         this.state = { subredditName: '' };
     }
 
@@ -28,21 +29,35 @@ export class AddSubredditForm extends React.Component {
     submit(event) {
         console.log("Submitted" + this.state.subredditName);
         let subreddit = this.state.subredditName;
-        let existingSubs = DbUtils.getSubreddits();
-        if (existingSubs) {
-            for (let i = 0; i < existingSubs.length; i++) {
-                if (existingSubs[i] == subreddit) {
-                    alert("Already Added");
-                    return;
-                }
-            }
+        if (!this.validateInput(subreddit)) {
+            alert("Enter a valid input.");
         } else {
-            existingSubs = [];
+            let existingSubs = DbUtils.getSubreddits();
+            if (existingSubs) {
+                for (let i = 0; i < existingSubs.length; i++) {
+                    if (existingSubs[i] == subreddit) {
+                        alert("Already Added");
+                        return;
+                    }
+                }
+            } else {
+                existingSubs = [];
+            }
+            existingSubs.push(subreddit);
+            DbUtils.storeSubreddits(existingSubs);
+            this.props.onAfterAdd();
         }
-        existingSubs.push(subreddit);
-        DbUtils.storeSubreddits(existingSubs);
-        this.props.onAfterAdd();
         event.preventDefault();
+    }
+
+    validateInput(subredditName) {
+        let noWhiteSpace = subredditName.replace(/\s/g, "");
+        console.log("validation: " + noWhiteSpace.length);
+        if(noWhiteSpace.length>0){
+            return true;
+        }
+
+        return false;
     }
 
     render() {
@@ -72,7 +87,7 @@ export class SwitchSubreddit extends React.Component {
     }
 
     selectionChange(event) {
-        console.log("updating state "+ event.target.value);
+        console.log("updating state " + event.target.value);
         this.setState({ selected: event.target.value });
     }
 

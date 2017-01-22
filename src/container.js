@@ -15,14 +15,19 @@ class SubredditContainer extends React.Component {
         this.playPrevious = this.playPrevious.bind(this);
         this.playNext = this.playNext.bind(this);
         this.loadMoreItems = this.loadMoreItems.bind(this);
+        this.onLoadError = this.onLoadError.bind(this);
         this.state = { loading: true, autoplay: false, subreddit: this.props.subreddit, lastItemId: "" };
+    }
+
+    onLoadError() {
+        this.setState({ current: null, loading: false, items: [] });
     }
 
     componentDidMount() {
         getPosts(this.state.subreddit, function (items, lastItemId) {
             console.log("number of youtube videos found = " + items.length);
             this.resetList(items, lastItemId);
-        }.bind(this));
+        }.bind(this), this.onLoadError);
     }
 
 
@@ -33,20 +38,22 @@ class SubredditContainer extends React.Component {
             getPosts(nextProps.subreddit, function (items, lastItem) {
                 console.log("number of youtube videos found for updated= " + items.length);
                 this.resetList(items, lastItem);
-            }.bind(this));
+            }.bind(this), this.onLoadError);
         }
     }
 
     resetList(list, lastItem) {
         if (list.length > 0) {
             this.setState({ loading: false, items: list, current: list[0], currentIndex: 0, lastItemId: lastItem });
+        }else{
+            this.onLoadError();
         }
     }
 
-    updateListOnly(list, lastItem){
+    updateListOnly(list, lastItem) {
         this.setState({ loading: false, items: list, lastItemId: lastItem });
     }
-    
+
 
     itemClickHandler(item, index) {
         console.log("Clicked " + item.videoId());
@@ -81,7 +88,7 @@ class SubredditContainer extends React.Component {
                 let current = this.state.items;
                 current = current.concat(elements);
                 this.updateListOnly(current, lastItem);
-            }.bind(this));
+            }.bind(this), this.onLoadError);
         }
     }
 
@@ -89,7 +96,8 @@ class SubredditContainer extends React.Component {
         if (this.state.loading) {
             return <span className="loading"></span>
         } else {
-            let player = <span>No Video Found</span>
+            let player = <div className="error">No Video Found<br />If you are sure that the subreddit you have seleced has videos, 
+            then check the name of the Subreddit for spelling mistakes.</div>
             if (this.state.current != null) {
                 player = <div>
                     <Video title={this.state.current.title()} videoId={this.state.current.videoId()} autoplay={this.state.autoplay} />
@@ -100,7 +108,6 @@ class SubredditContainer extends React.Component {
                 <div>
                     <div>
                         {player}
-
                     </div>
                     <PostList items={this.state.items} onItemClick={this.itemClickHandler} />
                     <div className="row">

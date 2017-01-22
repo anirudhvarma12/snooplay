@@ -1,228 +1,175 @@
-@font-face
-{
+@font-face {
     font-family: 'fontello';
     font-weight: normal;
     font-style: normal;
-
     src: url('icons/fontello.eot?9151571');
-    src: url('icons/fontello.eot?9151571#iefix') format('embedded-opentype'),
-    url('icons/fontello.woff?9151571') format('woff'),
-    url('icons/fontello.ttf?9151571') format('truetype'),
-    url('icons/fontello.svg?9151571#fontello') format('svg');
+    src: url('icons/fontello.eot?9151571#iefix') format('embedded-opentype'), url('icons/fontello.woff?9151571') format('woff'), url('icons/fontello.ttf?9151571') format('truetype'), url('icons/fontello.svg?9151571#fontello') format('svg');
 }
 
 html,
-body
-{
+body {
     font-family: 'Nunito Sans', sans-serif;
     font-size: 14px;
-
     width: 100%;
     height: 100%;
     margin: 0;
     padding: 0;
-
     color: #072431;
     background: #f5f5f5;
 }
 
-a
-{
+a {
     cursor: pointer;
     text-decoration: none;
-
     color: inherit;
 }
 
-.row
-{
+.row {
     max-width: 62em;
     margin: 0 auto;
 }
 
-.player
-{
+.player {
     padding: 40px 0;
-
     text-align: center;
-
     color: #f5f5f5;
     background: #072431;
     box-shadow: 2px 2px 2px #949494;
 }
 
-.player-title
-{
+.player-title {
     font-weight: 300;
-
     margin: 0 0 20px 0;
 }
 
-.playerControls
-{
+.playerControls {
     font-size: 45px;
-
     overflow: hidden;
-
     padding: 10px;
-
     color: #8c8c8c;
     border: 1px solid #cecece;
     border-top: 0;
     border-radius: 0 0 3px 3px;
     background: #fff;
 }
-.playerControls a
-{
+
+.playerControls a {
     transition: all ease-in .3s;
 }
-.playerControls a:hover
-{
+
+.playerControls a:hover {
     color: #072431;
 }
 
-.playerControls > div
-{
+.playerControls>div {
     display: inline-block;
 }
 
-.playerControls-listControls
-{
+.playerControls-listControls {
     font-size: 35px;
-
     float: right;
 }
 
-.playerControls-item
-{
+.playerControls-item {
     display: inline-block;
-
     margin: 10px 0;
 }
 
-.postList
-{
+.postList {
     padding: 0;
-
     list-style: none;
 }
 
-.postItem
-{
+.postItem {
     font-size: 18px;
-
     padding: 10px;
-
     border: 1px solid #cecece;
     border-bottom: 0;
     background: #fff;
 }
 
-.postItem:last-child
-{
+.postItem:last-child {
     border-bottom: 1px solid #cecece;
 }
 
-.postItem-playLink
-{
+.postItem-playLink {
     display: block;
 }
 
-.postItem-permalink
-{
+.postItem-permalink {
     font-size: 14px;
-
     display: block;
-
     margin-top: 5px;
-
     color: #8c8c8c;
 }
 
-form
-{
+form {
     margin: 0;
 }
 
-.header
-{
+.header {
     padding: 20px 0;
-
     box-shadow: 2px 2px 2px #949494;
 }
 
 [class^='icon-']:before,
-[class*=' icon-']:before
-{
+[class*=' icon-']:before {
     font-family: 'fontello';
     font-weight: normal;
     font-style: normal;
     font-variant: normal;
     line-height: 1em;
-
     display: inline-block;
-
     width: 1em;
     margin-right: .2em;
     margin-left: .2em;
-
     text-align: center;
     text-decoration: inherit;
     text-transform: none;
-
     speak: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-next:before
-{
+.icon-next:before {
     content: '\e800';
-} 
-.icon-prev:before
-{
+}
+
+.icon-prev:before {
     content: '\e801';
-} 
-.icon-play:before
-{
+}
+
+.icon-play:before {
     content: '\f144';
-} 
-.icon-reddit:before
-{
+}
+
+.icon-reddit:before {
     content: '\f1a1';
 }
 
-.header-column
-{
+.header-column {
     display: inline-block;
-
     width: 50%;
 }
 
-.header-column > h2
-{
+.header-column>h2 {
     margin: 0;
 }
 
-.header-column:last-child
-{
+.header-column:last-child {
     text-align: right;
 }
 
 select,
-input
-{
+input {
     display: inline-block;
-
     min-width: 52%;
     margin-right: 10px;
     padding: 4px;
 }
 
-button
-{
+button {
     padding: 5px;
-
     color: #fff;
     border: 0;
     border-radius: 3px;
@@ -250,6 +197,15 @@ button
     text-align: center;
 }
 
-.footer a{
+.footer a {
     text-decoration: underline;
+}
+
+.error {
+    text-align: center;
+    padding: 10px;
+    width: 300px;
+    background: #e74c3c;
+    margin: 10px auto;
+    color: #FFF;
 }
