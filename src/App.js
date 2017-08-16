@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './styles/app.scss';
 
 class App extends Component {
+
   render() {
     return (
       <div className="App">
