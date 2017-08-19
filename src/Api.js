@@ -51,3 +51,44 @@ export const getFollowUpPosts = (subreddit, filter, lastItem, onsuccess, onerror
     let url = "https://www.reddit.com/r/" + subreddit + '/' + filter + ".json?count=30&after=" + lastItem;
     createListFromUrl(url, onsuccess, onerror);
 }
+
+export const isStorageAvailable = () => {
+    //test if localstorage is available.
+    try {
+        var storage = window['localStorage'],
+            x = '__storage_test__';
+        storage.setItem(x, x);
+        storage.removeItem(x);
+        return true;
+    }
+    catch (e) {
+        return false;
+    }
+}
+
+const STORE_KEY = "snooplay2_subredditList";
+
+export const storeSubreddits = (items) => {
+    window.localStorage.setItem(STORE_KEY, JSON.stringify(items));
+}
+
+export const storeSubreddit = (item) => {
+    let current = getSubreddits();
+    if (current.indexOf(item) === -1) {
+        current.push(item);
+        storeSubreddits(current);
+    }
+}
+
+export const getSubreddits = () => {
+    let stored = window.localStorage.getItem(STORE_KEY);
+    if (stored != null) {
+        return JSON.parse(stored);
+    }
+    return [];
+}
+
+export const isSetupComplete = () => {
+    let subs = getSubreddits();
+    return subs.length > 0;
+}

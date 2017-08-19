@@ -1,0 +1,4 @@
+//actions
+export const ACTION_NOTIFICATION = 'ACTION_NOTIFICATION';
+export const ACTION_NEW_SUB = 'ACTION_NEW_SUB';
+export const ACTION_ADD_DEFAULT = 'ACTION_ADD_DEFAULT';
