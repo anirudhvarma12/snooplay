@@ -5,6 +5,7 @@ import ReducerFetchSubreddits from './ReducerFetchSubreddits';
 import ReducerLoadingState from './ReducerLoadingState';
 import ReducerNotification from './ReducerNotification';
 import ReducerCurrentSubreddit from './ReducerCurrentSubreddit';
+import ReducerLastPost from './ReducerLastPost';
 
 export default combineReducers({
     currentPost: ReducerCurrentPost,
@@ -12,5 +13,6 @@ export default combineReducers({
     subs: ReducerFetchSubreddits,
     currentSub: ReducerCurrentSubreddit,
     loaderVisible: ReducerLoadingState,
-    notification: ReducerNotification
+    notification: ReducerNotification,
+    lastPostId: ReducerLastPost
 });

@@ -1,10 +1,21 @@
 import React, { Component } from 'react';
 import RecommendedSubList from './RecommendedSubList';
 import AddSubredditForm from './../AddSubredditForm';
+import { isSetupComplete } from './../../Api';
+import { Link } from 'react-router-dom';
 
 
 export default class Setup extends Component {
     render() {
+        if (isSetupComplete()) {
+            return (
+                <div>
+                    <h3>Setup is already complete</h3>
+                    <Link to="/">Home</Link>
+                </div>
+            )
+        }
+
         return (
             <div>
                 <h2>Hi, Welcome to Snooplay. To get started add a subreddit your choice below.</h2>

@@ -7,7 +7,6 @@ export const FILTER_TOP = 'top';
 
 const createPost = (object) => {
     if (object.secure_media_embed && object.media) {
-        console.log(object.title, object.url, object.author_flair_text);
         let post = { id: object.id, author: object.author, score: object.score, title: object.title };
         post.url = object.url;
         post.permalink = "https://reddit.com/" + object.permalink;
@@ -30,7 +29,6 @@ const createListFromUrl = (url, onsuccess, onerror) => {
         posts.forEach(function (element) {
             let item = createPost(element.data);
             if (item != null) {
-                console.log(item);
                 items.push(item);
             }
         }, this);

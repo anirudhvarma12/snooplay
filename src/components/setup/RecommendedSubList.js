@@ -12,7 +12,7 @@ class RecommededSubList extends Component {
     }
 
     getDefaultSubItem = (sub) => {
-        return <li key={sub}>/r/ {sub}</li>
+        return <li key={sub}>/r/{sub}</li>
     }
 
     onAccepted = () => {

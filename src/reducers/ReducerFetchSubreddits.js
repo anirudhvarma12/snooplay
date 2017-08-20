@@ -1,5 +1,4 @@
 import { ACTION_NEW_SUB, ACTION_ADD_DEFAULT } from './../Constants';
-import { getSubreddits } from './../Api';
 
 export default function fetchSubreddits(state = null, action) {
     switch (action.type) {
@@ -21,6 +20,8 @@ export default function fetchSubreddits(state = null, action) {
             currentSubs.concat(defaults);
             return currentSubs;
         }
+        default: {
+            return state;
+        }
     }
-    return state;
 }

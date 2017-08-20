@@ -1,31 +1,33 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './styles/app.scss';
 import { Provider } from 'react-redux';
 import configureAppState from './AppState';
-// import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 import FeedbackPanel from './components/FeedbackPanel';
 import Setup from './components/setup/SetupContainer';
-import { isSetupComplete } from './Api';
+import Loader from './components/Loader';
+import AddSubredditForm from './components/AddSubredditForm';
+import AppSection from './components/main/index';
+import Home from './components/Home';
 
 const store = configureAppState();
 
 class App extends Component {
 
   render() {
-
-    let component = <span>Main Here</span>
-    if (!isSetupComplete()) {
-      component = <Setup />
-    }
-
     return (
-      <Provider store={store}>
-        <div>
-          <FeedbackPanel />
-          {component}
-        </div>
-      </Provider>
+      <BrowserRouter>
+        <Provider store={store}>
+          <div>
+            <Loader />
+            <FeedbackPanel />
+            <Route path="/r/:subreddit?" component={AppSection} />
+            <Route exact path="/" component={Home} />
+            <Route exact path="/setup" component={Setup} />
+            <Route exact path="/add" component={AddSubredditForm} />
+          </div>
+        </Provider>
+      </BrowserRouter>
     );
   }
 }
