@@ -24,6 +24,7 @@ class PostListContainer extends Component {
 
     onPostChanged = (post) => {
         this.props.actions.setCurrentPost(post);
+        window.scrollTo(0,0);
     }
 
     render() {

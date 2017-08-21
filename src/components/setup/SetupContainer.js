@@ -17,8 +17,8 @@ export default class Setup extends Component {
         }
 
         return (
-            <div>
-                <h2>Hi, Welcome to Snooplay. To get started add a subreddit your choice below.</h2>
+            <div className="setupContainer">
+                <h2>Hi, Welcome to Snooplay. The Reddit Media Player <br />To get started add a subreddit your choice below.</h2>
                 <AddSubredditForm />
                 <h2>Or, Get started with some awesome defaults</h2>
                 <RecommendedSubList />

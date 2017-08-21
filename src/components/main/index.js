@@ -4,7 +4,6 @@ import PostContainer from './PostContainer';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setCurrentSub, fetchPosts } from './../../actions/';
-import Header from './Header';
 import { withRouter } from 'react-router-dom';
 
 class AppSection extends Component {
@@ -23,7 +22,6 @@ class AppSection extends Component {
     render() {
         return (
             <div>
-                <Header />
                 <PostContainer />
                 <PostListContainer />
             </div>

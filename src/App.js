@@ -9,6 +9,7 @@ import Loader from './components/Loader';
 import AddSubredditForm from './components/AddSubredditForm';
 import AppSection from './components/main/index';
 import Home from './components/Home';
+import Header from './components/main/Header';
 
 const store = configureAppState();
 
@@ -21,6 +22,7 @@ class App extends Component {
           <div>
             <Loader />
             <FeedbackPanel />
+            <Header />
             <Route path="/r/:subreddit?" component={AppSection} />
             <Route exact path="/" component={Home} />
             <Route exact path="/setup" component={Setup} />

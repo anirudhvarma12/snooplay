@@ -7,6 +7,9 @@ class SubredditListContainer extends Component {
         subreddits: []
     }
 
+    componentWillReceiveProps(nextProps) {
+        console.log("received updated list " + nextProps.subreddits);
+    }
     render() {
         return (
             <SubredditList subreddits={this.props.subreddits} />

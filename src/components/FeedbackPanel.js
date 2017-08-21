@@ -9,18 +9,15 @@ class FeedbackPanel extends Component {
 
     render() {
         return (
-            <div className="feedback-panel">
-                {this.props.message}
-                <a>Hide</a>
-            </div>
+            <span></span>
         )
     }
 
-    // componentWillReceiveProps(nextProps) {
-    //     if (nextProps.message) {
-    //         console.log("Received new message to show", message);
-    //     }
-    // }
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.message) {
+            alert(nextProps.message);
+        }
+    }
 }
 
 function mapStateToProps(state) {

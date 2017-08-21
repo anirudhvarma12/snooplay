@@ -1,5 +1,5 @@
 import {
-    ACTION_NOTIFICATION, ACTION_NEW_SUB, ACTION_ADD_DEFAULT, ACTION_SET_CURRENT_SUB, ACTION_SET_POSTS, ACTION_CURRENT_POST,
+    ACTION_NOTIFICATION, ACTION_NEW_SUB, ACTION_SET_CURRENT_SUB, ACTION_SET_POSTS, ACTION_CURRENT_POST,
     ACTION_SHOW_LOADER, ACTION_HIDE_LOADER, ACTION_SET_LAST_POST, ACTION_SET_FOLLOWUP
 } from './../Constants';
 import { getPosts, getFollowUpPosts } from './../Api';
@@ -9,13 +9,6 @@ export const dispatchNotification = (message) => {
         type: ACTION_NOTIFICATION,
         payload: message
     };
-}
-
-export const addDefaultSubreddits = (defaults) => {
-    return {
-        type: ACTION_ADD_DEFAULT,
-        payload: defaults
-    }
 }
 
 export const addSubreddit = (subreddit) => {
@@ -40,7 +33,7 @@ export const fetchPosts = (subreddit) => {
             dispatch(setLastPost(lastId));
             dispatch(hideLoader());
         }, (error) => {
-            dispatchNotification(error);
+            dispatch(dispatchNotification("Error in loading posts. Please ensure that the subreddit exists"));
             dispatch(hideLoader());
         });
     }

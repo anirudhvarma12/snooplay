@@ -88,5 +88,6 @@ export const getSubreddits = () => {
 
 export const isSetupComplete = () => {
     let subs = getSubreddits();
+    console.log("subs " + subs.length);
     return subs.length > 0;
 }

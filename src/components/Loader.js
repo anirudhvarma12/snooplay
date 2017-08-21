@@ -6,7 +6,7 @@ class Loader extends Component {
     render() {
         let component = <span>{this.props.isLoading}</span>
         if (this.props.isLoading) {
-            component = <span>Loading</span>
+            component = <div className="loader"></div>
         }
         return (
             component

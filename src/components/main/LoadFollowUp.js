@@ -12,7 +12,9 @@ class LoadFollowUp extends Component {
 
     render() {
         return (
-            <a onClick={this.onClick}>Load More</a>
+            <div className="loadmore-container">
+                <a onClick={this.onClick} className="button">Load More</a>
+            </div>
         )
     }
 }
