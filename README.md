@@ -5,7 +5,7 @@ layout.
 
 I often use /r/music to listen to Music, and opening YouTube links and closing them was not the best way to do so, so I built Snooplay.
 
-## Try out Snooplay - [Here] (http://snooplay.surge.sh)
+## Try out Snooplay - [Here](http://snooplay.surge.sh)
 
 # Learning React #
 Snooplay is primarily a learning exercise. [v1](https://github.com/anirudhvarma12/snooplay/tree/v1) was the first attempt at learning
