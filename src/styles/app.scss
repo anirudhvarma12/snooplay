@@ -1,6 +1,12 @@
 $body-background: #111111;
 $primary-color: #EB484D;
 $secondary-color: #7500D8;
+@mixin on-mobile() {
+    @media (max-width: 850px) {
+        @content;
+    }
+}
+
 * {
     box-sizing: border-box;
 }
@@ -34,6 +40,10 @@ a {
     background: $primary-color;
     padding: 20px;
     position: relative;
+
+    @include on-mobile(){
+        text-align: center;
+    }
 }
 
 .header-title {
@@ -44,11 +54,18 @@ a {
     float: right;
     font-size: 25px;
     a {
-        margin-left: 20px;
         transition: all ease-in-out 0.5s;
+        &::after {
+            content: '\2219';
+            display: inline-block;
+            margin: 0 5px;
+        }
         &:hover {
             color: darken($primary-color, 25%);
         }
+    }
+    @include on-mobile() {
+        float: none;
     }
 }
 
@@ -89,6 +106,9 @@ a {
     margin: 0 auto;
     text-align: center;
     padding: 20px;
+    @include on-mobile() {
+        width: 100%;
+    }
 }
 
 .post-list {
@@ -98,6 +118,11 @@ a {
         display: inline-block;
         width: 33.3%;
         padding: 10px;
+        @include on-mobile() {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
     }
 }
 
